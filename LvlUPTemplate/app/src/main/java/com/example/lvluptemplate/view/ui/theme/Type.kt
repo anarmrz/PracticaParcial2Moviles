@@ -1,4 +1,4 @@
-package com.example.lvluptemplate.ui.theme
+package com.example.lvluptemplate.view.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
