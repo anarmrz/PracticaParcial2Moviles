@@ -17,15 +17,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
 import com.example.lvluptemplate.components.SongResultRow
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 
 
 @Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen() {
+fun SearchScreen(
+    viewModel: MusicViewModel,
+    onSongClick: (String) -> Unit,
+    onNavigateBack: () -> Unit,
+    navController: NavHostController
+) {
 
     var searchQuery by remember { mutableStateOf("") }
 

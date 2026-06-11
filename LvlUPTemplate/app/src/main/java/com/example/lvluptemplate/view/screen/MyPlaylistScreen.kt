@@ -20,9 +20,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 import kotlin.collections.listOf
 
 data class SongP(val nombre: String)
@@ -30,7 +33,13 @@ data class SongP(val nombre: String)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showBackground = true)
-fun MyPlaylistScreen() {
+fun MyPlaylistScreen(
+    viewModel: MusicViewModel,
+    playlistId: String,
+    onSongClick: (String) -> Unit,
+    onNavigateBack: () -> Unit,
+    navController: NavHostController
+) {
 
     val playlistSongs by remember {
         mutableStateOf(

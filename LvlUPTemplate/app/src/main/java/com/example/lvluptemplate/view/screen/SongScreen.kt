@@ -29,15 +29,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
 import com.example.lvluptemplate.components.TrackRowItem
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showBackground = true)
-fun SongDetailScreen() {
+fun SongDetailScreen(
+    viewModel: MusicViewModel,
+    songId: String,
+    onNavigateBack: () -> Unit,
+    navController: NavHostController
+) {
     val topBackgroundColor = Color(0xFF1A1A1A)
     val bottomBackgroundColor = Color(0xFF0D0E11)
     val darkCardColor = Color(0xFF161920)

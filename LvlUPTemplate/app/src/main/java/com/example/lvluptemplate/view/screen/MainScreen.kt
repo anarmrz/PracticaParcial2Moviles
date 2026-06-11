@@ -24,13 +24,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.lvluptemplate.components.InfoCard
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 
 @Composable
 @Preview(showBackground = true)
-fun MainScreen() {
+fun MainScreen(
+    viewModel: MusicViewModel,
+    onSongClick: (String) -> Unit,
+    navController: NavHostController
+) {
     Scaffold(
         bottomBar = {
             Column() {

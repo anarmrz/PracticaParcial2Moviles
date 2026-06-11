@@ -11,17 +11,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.lvluptemplate.components.AddPlaylistCard
 import com.example.lvluptemplate.components.CreatePlaylistDialog
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.PlaylistCardComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 
 data class Playlist(val id: Int, val name: String, val tracksCount: Int)
 
 @Preview(showBackground = true)
 @Composable
-fun PlaylistsScreen() {
+fun PlaylistsScreen(
+    viewModel: MusicViewModel,
+    onPlaylistClick: (String) -> Unit,
+    onNavigateBack: () -> Unit,
+    navController: NavHostController
+) {
 
     var showDialog by remember { mutableStateOf(false) }
 
