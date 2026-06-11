@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.lvluptemplate.components.Song
 import com.example.lvluptemplate.model.entities.GenreEntity
 import com.example.lvluptemplate.model.entities.PlaylistEntity
 import com.example.lvluptemplate.model.entities.PlaylistSongCrossRef
@@ -14,16 +13,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MusicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE) //Insertar cancion (ya viene en el dummydata, no se usara aca)
-    suspend fun insertSong(song: SongEntity)
+    suspend fun insertSong(song: List<SongEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) //Insertar genero (ya viene en el dummydata, no se usara aca)
-    suspend fun insertGenre(genre: GenreEntity)
+    suspend fun insertGenre(genre: List<GenreEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) //Insertar playlist (En el componente createplaylistdialog, tercera parte)
-    suspend fun insertPlaylist(playlist: PlaylistEntity)
+    suspend fun insertPlaylist(playlist: List<PlaylistEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) //Insertar playlist con sus respectivas canciones (Agregar a favoritos y agregar a custom playlist, quinta parte y puntos extra)
-    suspend fun insertPlaylistSongCrossRef(playlistSongCrossRef: PlaylistSongCrossRef)
+    suspend fun insertPlaylistSongCrossRef(playlistSongCrossRef: List<PlaylistSongCrossRef>)
 
     @Query("SELECT * FROM songs") //Mostrar canciones (En el mainscreen, primera parte)
     fun getSongs():  Flow<List<SongEntity>>
@@ -35,7 +34,7 @@ interface MusicDao {
     fun getPlaylists():  Flow<List<PlaylistEntity>>
 
     @Query("SELECT * FROM songs WHERE genreId = :genreId") //Mostrar la cancion con su genero (no pide justo eso aparte asi que no es necesario)
-    fun getSongsByGenre(genreId: Long):  Flow<List<SongEntity>>
+    fun getSongsByGenre(genreId: Long):  Flow<List<SongEntity>> //Si en dado caso lo quisiera poner en el viewmodel, seria asi: fun getSongsByGenre(genreId: Long) = musicDao.getSongsByGenre(genreId)
 
     /*
     * ESTA NO: porque simplemente me devolvera dos numeros, que es el id de la cancion y el id de la playlist entonces no necesito
@@ -49,7 +48,7 @@ interface MusicDao {
     @Query("SELECT * FROM songs " +
             "INNER JOIN playlist_song_cross_ref crossRef ON songs.id = crossRef.songId " +
             "WHERE crossRef.playlistId = :playlistId")
-    fun getSongsForPlaylist(playlistId: Long): Flow<List<SongEntity>>
+    fun getSongsForPlaylist(playlistId: String): Flow<List<SongEntity>>
 
     //Mostrar cancion (Al buscarla por su titulo, artista, album o genero en SearchScreen, Segunda parte)
     @Query("SELECT * FROM songs " +

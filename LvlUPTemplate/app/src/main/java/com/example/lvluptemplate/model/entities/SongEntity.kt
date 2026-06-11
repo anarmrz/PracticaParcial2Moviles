@@ -1,6 +1,5 @@
 package com.example.lvluptemplate.model.entities
 
-import android.icu.text.CaseMap
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
@@ -24,18 +23,19 @@ Una Canción tiene asignado un solo género (según la estructura que te piden).
         ForeignKey(
             entity = GenreEntity::class,
             parentColumns = ["id"],
-            childColumns = ["genreId"]
+            childColumns = ["genreId"],
+            onDelete = ForeignKey.CASCADE
         )
     ]
-    )
+)
 data class SongEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Long=0,
-    val title:String,
-    val artist:String,
-    val album:String,
+    val id: String,
+    val title: String,
+    val artist: String,
+    val album: String,
     val coverUrl: String,
-    val genreId: Long,
+    val genreId: String,
     val playCount: Int = 0 //Para la parte de puntos extra
 
 )

@@ -1,9 +1,6 @@
 package com.example.lvluptemplate.model.entities
 
-import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
 
 
 /*RELACION N:N:
@@ -16,6 +13,6 @@ Una Canción puede estar en muchas playlists diferentes.
     primaryKeys = ["playlistId", "songId"]
 )
 data class PlaylistSongCrossRef(
-    val playlistId: Long,
-    val songId: Long
+    val playlistId: String,
+    val songId: String
 )
