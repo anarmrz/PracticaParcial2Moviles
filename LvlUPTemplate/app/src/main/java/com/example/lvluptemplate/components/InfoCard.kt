@@ -19,17 +19,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import coil.compose.AsyncImage
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 
-@Preview(showBackground = true)
 @Composable
-fun InfoCard() {
+fun InfoCard(
+    songId: String,
+    songArtist: String,
+    songTitle: String,
+    songCover: String,
+    onSongClick: (String) -> Unit
+) {
     Box(
         modifier = Modifier
             .size(180.dp, 240.dp)
             .padding(end = 16.dp)
             .background(Color(0xFF1A1A1A), RoundedCornerShape(16.dp))
             .padding(16.dp)
+            .clickable{onSongClick(songId)}
 
     ) {
         Column {
@@ -38,20 +46,25 @@ fun InfoCard() {
                     .fillMaxWidth()
                     .background(Color(0xFF333333))
                     .height(150.dp)
-                    .clickable {
-                    }
+                    .clickable { onSongClick(songId) }
             ){
                 AsyncImage(
                     //Cambiar model por las imagenes de las canciones
-                    model = "https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/0x1900-000000-80-0-0.jpg",
+                    model = songCover,
                     contentDescription = "Cover de portada",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "Song Title", color = Color.White)
-            Text(text = "Artist Name", color = Color.Gray)
+            Text(
+                text = songTitle,
+                color = Color.White
+            )
+            Text(
+                text = songArtist,
+                color = Color.Gray
+            )
         }
         }
     }

@@ -33,9 +33,9 @@ import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
 import com.example.lvluptemplate.viewmodel.MusicViewModel
 import androidx.compose.runtime.getValue //PARA EL BY
+import androidx.compose.foundation.lazy.items //PARA ITERAR ITEMS
 
 @Composable
-@Preview(showBackground = true)
 fun MainScreen(
     viewModel: MusicViewModel,
     onSongClick: (String) -> Unit,
@@ -44,6 +44,13 @@ fun MainScreen(
     val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
     //Al poner empty list le estás diciendo: "Mientras la base de datos se digna a traerme
     // las canciones reales, dibuja una lista vacía para que la aplicación no colapse".
+
+    val favoriteArtistsSongs = allSongs.take(3)
+    val newMusicSongs = allSongs.drop(3).take(3)
+    val recommendedSongs = allSongs.drop(6)
+
+
+
     Scaffold(
         bottomBar = {
             Column() {
@@ -88,8 +95,15 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         /*Iterar en una lista de canciones*/
-                        item { InfoCard() }
-                        item { InfoCard() }
+                        items(favoriteArtistsSongs) { song ->
+                            InfoCard(
+                                songId = song.id,
+                                songArtist = song.artist,
+                                songTitle = song.title,
+                                songCover = song.coverUrl,
+                                onSongClick = onSongClick
+                            )
+                        }
                     }
                 }
             }
@@ -101,9 +115,15 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     /*Iterar en una lista de canciones*/
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        item { InfoCard() }
-                        item { InfoCard() }
-                        item { InfoCard() }
+                        items(newMusicSongs) { song ->
+                            InfoCard(
+                                songId = song.id,
+                                songArtist = song.artist,
+                                songTitle = song.title,
+                                songCover = song.coverUrl,
+                                onSongClick = onSongClick
+                            )
+                        }
                     }
                 }
             }
@@ -115,8 +135,15 @@ fun MainScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                         /*Iterar en una lista de canciones*/
-                        item { InfoCard() }
-                        item { InfoCard() }
+                        items(recommendedSongs) { song ->
+                            InfoCard(
+                                songId = song.id,
+                                songArtist = song.artist,
+                                songTitle = song.title,
+                                songCover = song.coverUrl,
+                                onSongClick = onSongClick
+                            )
+                        }
                     }
                 }
             }
