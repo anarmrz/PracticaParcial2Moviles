@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
+import com.example.lvluptemplate.components.Song
 import com.example.lvluptemplate.components.SongResultRow
 import com.example.lvluptemplate.viewmodel.MusicViewModel
 
@@ -38,6 +39,9 @@ fun SearchScreen(
     val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
 
     var searchQuery by remember { mutableStateOf("") }
+
+    val searchResults by viewModel.searchSongs(searchQuery).collectAsState(initial = emptyList())
+
 
 
     Scaffold(
@@ -96,6 +100,26 @@ fun SearchScreen(
                     unfocusedTextColor = Color.White
                 )
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(searchResults) { song ->
+                    SongResultRow(
+                        song = Song(
+                            song.title,
+                            song.artist,
+                            song.coverUrl
+                        ),
+                        onClick = { onSongClick(song.id) }
+                    )
+                }
+
+
+            }
         }
     }
 

@@ -32,6 +32,8 @@ fun PlaylistsScreen(
 ) {
     val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
 
+    val allPlaylist
+
     var showDialog by remember { mutableStateOf(false) }
 
     var playlists by remember {

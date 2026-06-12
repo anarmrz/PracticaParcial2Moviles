@@ -38,7 +38,7 @@ fun NavGraph(navController: NavHostController, viewModel: MusicViewModel){
                                                                                                   * objeto backStackEntry. Aquí adentro viene guardado todo el contexto de ese
                                                                                                   * viaje específico, incluyendo la ruta exacta, el ciclo de vida y los
                                                                                                   * parámetros ocultos que mandó la pantalla anterior.
-                                                                                                  */
+                                                                                               */
 
             val safePlaylistId = backStackEntry.arguments?.getString("playlistId") ?: "0"  /*Si por algún error técnico lo anterior viene Nulo, NO explotes la aplicación.
                                                                                                  * Simplemente asigna un '0' como valor de emergencia
@@ -49,7 +49,7 @@ fun NavGraph(navController: NavHostController, viewModel: MusicViewModel){
                 playlistId = safePlaylistId,
                 onSongClick = { songId -> navController.navigate("song_screen/$songId") },
                 onNavigateBack = { navController.popBackStack() },
-                navController = navController
+                onNavigateMenu = { rutaDestino -> navController.navigate(rutaDestino) }
             )
         }
 
@@ -58,7 +58,7 @@ fun NavGraph(navController: NavHostController, viewModel: MusicViewModel){
                 viewModel = viewModel,
                 onPlaylistClick = { playlistId -> navController.navigate("my_playlist_screen/$playlistId") },
                 onNavigateBack = { navController.popBackStack() },
-                navController = navController
+                onNavigateMenu = { rutaDestino -> navController.navigate(rutaDestino) }
                 )
         }
 
@@ -67,7 +67,7 @@ fun NavGraph(navController: NavHostController, viewModel: MusicViewModel){
                 viewModel = viewModel,
                 onSongClick = { songId -> navController.navigate("song_screen/$songId") },
                 onNavigateBack = { navController.popBackStack() },
-                navController = navController
+                onNavigateMenu = { rutaDestino -> navController.navigate(rutaDestino) }
                 )
         }
 
@@ -78,7 +78,7 @@ fun NavGraph(navController: NavHostController, viewModel: MusicViewModel){
                 viewModel = viewModel,
                 songId = safeSongId,
                 onNavigateBack = { navController.popBackStack() },
-                navController = navController
+                onNavigateMenu = { rutaDestino -> navController.navigate(rutaDestino) }
             )
         }
 

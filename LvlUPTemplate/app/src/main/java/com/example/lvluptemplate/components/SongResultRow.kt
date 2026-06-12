@@ -16,18 +16,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 
-data class Song (val title: String, val artist: String)
+data class Song (val title: String, val artist: String, val coverUrl: String)
 
 @Composable
-fun SongResultRow(song: Song) {
+fun SongResultRow(
+    song: Song,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Acción al seleccionar canción */ }
+            .clickable { onClick() }
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -35,7 +40,14 @@ fun SongResultRow(song: Song) {
             modifier = Modifier
                 .size(50.dp)
                 .background(Color(0xFF1A1A1A), RoundedCornerShape(8.dp))
-        )
+        ){
+            AsyncImage(
+                model = song.coverUrl,
+                contentDescription = "Cover",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize()
+            )
+        }
 
         Spacer(modifier = Modifier.width(16.dp))
         Column {
