@@ -39,7 +39,6 @@ fun PlaylistsScreen(
 
     var showDialog by remember { mutableStateOf(false) }
 
-    var playlists by remember { mutableStateOf(listOf<Playlist>()) }
 
     Scaffold(
         bottomBar = {

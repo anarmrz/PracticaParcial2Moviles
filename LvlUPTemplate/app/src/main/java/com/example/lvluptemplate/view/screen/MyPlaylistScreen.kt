@@ -1,5 +1,6 @@
 package com.example.lvluptemplate.view.screen
 
+import androidx.compose.animation.core.withInfiniteAnimationFrameMillis
 import com.example.lvluptemplate.components.TrackRowItem
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,8 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
+import androidx.compose.foundation.lazy.items
 import coil.compose.AsyncImage
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
@@ -42,17 +42,18 @@ fun MyPlaylistScreen(
 ) {
     val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
 
-    val playlistSongs by remember {
-        mutableStateOf(
-                listOf(
-                    SongP("Like I Want You"),
-                    SongP("Blamegame"),
-                    SongP("Requiem"),
-                    SongP("MDF."),
-                    SongP("Risk It All")
-                )
-        )
-    }
+    val playlist by viewModel.allPlaylists.collectAsState(initial = emptyList())
+
+    // 1. Buscamos la playlist específica usando el ID
+    val currentPlaylist = playlist.find { it.id == playlistId }
+
+    // 2. Extraemos el nombre (y si por alguna razón no la encuentra, ponemos un texto por defecto)
+    val playlistName = currentPlaylist?.name ?: "Unknown Playlist"
+
+    val songsForPlaylist by viewModel.getSongsForPlaylist(playlistId).collectAsState(emptyList())
+
+    // 3. Para la imagen de la playlist, tomamos la imagen de la primera canción (si existe)
+    val playlistCover = songsForPlaylist.firstOrNull()?.coverUrl ?: "https://static.vecteezy.com/..." // Pon tu link por defecto aquí
 
     val topBackgroundColor = Color(0xFF1A1A1A)
     val bottomBackgroundColor = Color(0xFF0D0E11)
@@ -62,7 +63,7 @@ fun MyPlaylistScreen(
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = { /* Volver atrás */ }) {
+                    IconButton(onClick = {onNavigateBack()}) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                     }
                 },
@@ -109,7 +110,7 @@ fun MyPlaylistScreen(
                         Box(modifier = Modifier.fillMaxSize().background(Color(0xFF5E5A44))){
                             AsyncImage(
                                 //Cambiar model por las imagenes de las canciones
-                                model = "https://static.vecteezy.com/system/resources/previews/042/884/265/large_2x/space-minimalist-and-flat-logo-illustration-vector.jpg",
+                                model = playlistCover,
                                 contentDescription = "Cover de portada",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.matchParentSize()
@@ -120,7 +121,7 @@ fun MyPlaylistScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Playlist Name",
+                        text = playlistName,
                         color = Color.White,
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
@@ -171,13 +172,15 @@ fun MyPlaylistScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 24.dp, vertical = 24.dp)
                 ) {
-                        playlistSongs.forEach { song ->
-                            item {
-                                TrackRowItem(title = song.nombre)
-                                Spacer(modifier = Modifier.height(24.dp))
-                            }
-                        }
-
+                    // Iteración nativa y optimizada de Jetpack Compose
+                    items(songsForPlaylist) { song ->
+                        TrackRowItem(
+                            title = song.title,
+                            cover = song.coverUrl,
+                            onClick = { onSongClick(song.id) }
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                    }
                 }
 
         }

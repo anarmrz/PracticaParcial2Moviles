@@ -30,13 +30,16 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
 @Composable
-fun TrackRowItem(title: String) {
-    val context  = LocalContext.current
+fun TrackRowItem(
+    title: String,
+    cover: String,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 12.dp)
-            .clickable{ Toast.makeText(context,"Reproduciendo",Toast.LENGTH_SHORT).show()},
+            .clickable{ onClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -50,7 +53,7 @@ fun TrackRowItem(title: String) {
             ) {
                 AsyncImage(
                     //Cambiar model por las imagenes de las canciones
-                    model = "https://i.scdn.co/image/ab67616d0000b27390af5246adcaa93acb721c17",
+                    model = cover,
                     contentDescription = "Cover de portada",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize()
