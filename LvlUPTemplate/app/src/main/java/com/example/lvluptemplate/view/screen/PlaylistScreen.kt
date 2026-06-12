@@ -28,8 +28,9 @@ fun PlaylistsScreen(
     viewModel: MusicViewModel,
     onPlaylistClick: (String) -> Unit,
     onNavigateBack: () -> Unit,
-    navController: NavHostController
+    onNavigateMenu: (String) -> Unit
 ) {
+    val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -47,8 +48,18 @@ fun PlaylistsScreen(
     Scaffold(
         bottomBar = {
             Column {
-                MiniPlayerComponent()
-                SimpleBottomBar()
+                // Validación de seguridad obligatoria
+                if (allSongs.isNotEmpty()) {
+                    val currentSong = allSongs[0] // Tomas la canción
+
+                    MiniPlayerComponent(
+                        viewModel = viewModel,
+                        songId = currentSong.id,       // Pasas solo el ID
+                        title = currentSong.title,     // Pasas solo el título
+                        artist = currentSong.artist    // Pasas solo el artista
+                    )
+                }
+                SimpleBottomBar(onNavigateMenu = onNavigateMenu)
             }
         }
     ) { paddingValues ->

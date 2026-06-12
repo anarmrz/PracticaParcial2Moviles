@@ -18,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,19 +32,33 @@ import com.example.lvluptemplate.components.InfoCard
 import com.example.lvluptemplate.components.MiniPlayerComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
 import com.example.lvluptemplate.viewmodel.MusicViewModel
+import androidx.compose.runtime.getValue //PARA EL BY
 
 @Composable
 @Preview(showBackground = true)
 fun MainScreen(
     viewModel: MusicViewModel,
     onSongClick: (String) -> Unit,
-    navController: NavHostController
+    onNavigateMenu: (String) -> Unit
 ) {
+    val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
+    //Al poner empty list le estás diciendo: "Mientras la base de datos se digna a traerme
+    // las canciones reales, dibuja una lista vacía para que la aplicación no colapse".
     Scaffold(
         bottomBar = {
             Column() {
-                MiniPlayerComponent()
-                SimpleBottomBar()
+                // Validación de seguridad obligatoria
+                if (allSongs.isNotEmpty()) {
+                    val currentSong = allSongs[0] // Tomas la canción
+
+                    MiniPlayerComponent(
+                        viewModel = viewModel,
+                        songId = currentSong.id,       // Pasas solo el ID
+                        title = currentSong.title,     // Pasas solo el título
+                        artist = currentSong.artist    // Pasas solo el artista
+                    )
+                }
+                SimpleBottomBar(onNavigateMenu = onNavigateMenu)
             } }
     ) { paddingValues ->
         LazyColumn(

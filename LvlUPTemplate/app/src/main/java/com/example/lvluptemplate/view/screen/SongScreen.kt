@@ -43,8 +43,10 @@ fun SongDetailScreen(
     viewModel: MusicViewModel,
     songId: String,
     onNavigateBack: () -> Unit,
-    navController: NavHostController
+    onNavigateMenu: (String) -> Unit
 ) {
+    val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
+
     val topBackgroundColor = Color(0xFF1A1A1A)
     val bottomBackgroundColor = Color(0xFF0D0E11)
     val darkCardColor = Color(0xFF161920)
@@ -65,8 +67,18 @@ fun SongDetailScreen(
         },
         bottomBar = {
                 Column() {
-                    MiniPlayerComponent()
-                    SimpleBottomBar()
+                    // Validación de seguridad obligatoria
+                    if (allSongs.isNotEmpty()) {
+                        val currentSong = allSongs[0] // Tomas la canción
+
+                        MiniPlayerComponent(
+                            viewModel = viewModel,
+                            songId = currentSong.id,       // Pasas solo el ID
+                            title = currentSong.title,     // Pasas solo el título
+                            artist = currentSong.artist    // Pasas solo el artista
+                        )
+                    }
+                    SimpleBottomBar(onNavigateMenu = onNavigateMenu)
                 }
         }
     ) { paddingValues ->

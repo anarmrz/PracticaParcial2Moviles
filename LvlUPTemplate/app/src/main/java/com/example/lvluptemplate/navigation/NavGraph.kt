@@ -21,7 +21,7 @@ fun NavGraph(navController: NavHostController, viewModel: MusicViewModel){
             MainScreen(
                 viewModel = viewModel,
                 onSongClick = { songId -> navController.navigate("song_screen/$songId") },
-                navController = navController
+                onNavigateMenu = { rutaDestino -> navController.navigate(rutaDestino) }
             )
                 //Parte 1: que al pulsar la card me dirija a la pantalla de la cancion
                 /* 'songId ->'

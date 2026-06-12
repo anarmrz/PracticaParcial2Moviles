@@ -15,9 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun SimpleBottomBar() {
+fun SimpleBottomBar(onNavigateMenu: (String) -> Unit) {
     var selectedIndex by remember { mutableStateOf(0) }
     val icons = listOf(
         Icons.Default.Home,
@@ -31,7 +33,14 @@ fun SimpleBottomBar() {
         icons.forEachIndexed { index, icon ->
             NavigationBarItem(
                 selected = selectedIndex == index,
-                onClick = { selectedIndex = index },
+                onClick = {
+                    selectedIndex = index
+                    when (index) {
+                        0 -> onNavigateMenu("main_screen")
+                        1 -> onNavigateMenu("search_screen")
+                        2 -> onNavigateMenu("playlist_screen")
+                    }
+                },
                 icon = {
                     Icon(
                         imageVector = icon,

@@ -6,8 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.lvluptemplate.model.dao.MusicDao
 import com.example.lvluptemplate.model.entities.PlaylistEntity
 import com.example.lvluptemplate.model.entities.PlaylistSongCrossRef
+import com.example.lvluptemplate.model.entities.SongEntity
 import com.example.lvluptemplate.resources.DummyData
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -85,6 +88,46 @@ class MusicViewModel(private val musicDao: MusicDao) : ViewModel(){
         started = SharingStarted.WhileSubscribed(5000),
         emptyList()
     )
+
+    // ==========================================================
+    // PUNTOS EXTRA: ESTADO DEL REPRODUCTOR
+    // ==========================================================
+
+    // 1. Variable que guarda la canción que está sonando actualmente.
+    // Inicia en null porque al abrir la app no suena nada.
+    private val _currentPlayingSong = MutableStateFlow<SongEntity?>(null)
+    val currentPlayingSong = _currentPlayingSong.asStateFlow()
+
+    // 2. Función maestra: Cambia la canción en el reproductor Y suma un Play
+    fun setCurrentSong(song: SongEntity) {
+        _currentPlayingSong.value = song
+        // ¡Cumplimos el requerimiento! Al poner la canción en el reproductor, sumamos +1
+        playSong(song.id.toLong()) // Asegúrate de que el ID sea Long según tu BD
+    }
+
+    // 3. Lógica para botón Siguiente (SIN PARÁMETROS)
+    fun playNextSong() {
+        val currentList = allSongs.value // El ViewModel lee su propia lista
+        val currentSong = _currentPlayingSong.value ?: return
+
+        val currentIndex = currentList.indexOfFirst { it.id == currentSong.id }
+
+        if (currentIndex != -1 && currentIndex < currentList.size - 1) {
+            setCurrentSong(currentList[currentIndex + 1])
+        }
+    }
+
+    // 4. Lógica para botón Anterior (SIN PARÁMETROS)
+    fun playPreviousSong() {
+        val currentList = allSongs.value // El ViewModel lee su propia lista
+        val currentSong = _currentPlayingSong.value ?: return
+
+        val currentIndex = currentList.indexOfFirst { it.id == currentSong.id }
+
+        if (currentIndex > 0) {
+            setCurrentSong(currentList[currentIndex - 1])
+        }
+    }
 
     /*
      * FACTORY DEL VIEWMODEL (Fábrica)

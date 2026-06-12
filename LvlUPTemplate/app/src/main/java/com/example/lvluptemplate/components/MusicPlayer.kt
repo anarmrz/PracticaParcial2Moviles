@@ -28,9 +28,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.lvluptemplate.model.entities.SongEntity
+import com.example.lvluptemplate.viewmodel.MusicViewModel
 
 @Composable
-fun MiniPlayerComponent() {
+fun MiniPlayerComponent(
+    viewModel: MusicViewModel,
+    songId: String,
+    title: String,
+    artist: String
+) {
     val context = LocalContext.current
     Row(
         modifier = Modifier
@@ -46,19 +53,26 @@ fun MiniPlayerComponent() {
         Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Column {
                 Text(
-                    text = "Blamegame",
+                    text = title,
                     color = Color.White,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "NSQK",
+                    text = artist,
                     color = Color.Gray,
                     fontSize = 12.sp
                 )
             }
-            IconButton(onClick = { /* Añadir a Favoritos */ }) {
+            IconButton(
+                onClick = {
+                    viewModel.addSongToPlaylist( //MODIFICADO: Añadir la cancion actual a favoritos
+                        playlistId = "p4",
+                        songId = songId
+                    )
+                }
+            ) {
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "Play",
@@ -71,7 +85,7 @@ fun MiniPlayerComponent() {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { /* Mover a la canción anterior */ }) {
+            IconButton(onClick = {viewModel.playPreviousSong()}) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowLeft,
                     contentDescription = "Play",
@@ -88,7 +102,7 @@ fun MiniPlayerComponent() {
                     tint = Color.White
                 )
             }
-            IconButton(onClick = { /* Mover  a la siguiente canción */ }) {
+            IconButton(onClick = {viewModel.playNextSong()}) {
                 Icon(
                     imageVector = Icons.Filled.KeyboardArrowRight,
                     contentDescription = "Next",
