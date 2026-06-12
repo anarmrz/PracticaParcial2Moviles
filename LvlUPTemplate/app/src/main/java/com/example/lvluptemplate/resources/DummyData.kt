@@ -4,6 +4,7 @@ import com.example.lvluptemplate.model.entities.GenreEntity
 import com.example.lvluptemplate.model.entities.PlaylistEntity
 import com.example.lvluptemplate.model.entities.PlaylistSongCrossRef
 import com.example.lvluptemplate.model.entities.SongEntity
+import com.example.lvluptemplate.view.screen.Playlist
 
 
 // --- 1. TABLA DE CANCIONES (SongEntity) ---
@@ -77,6 +78,8 @@ import com.example.lvluptemplate.model.entities.SongEntity
             name = "Favorites",
             description = "Canciones que te gustan"
         )
+
+
     )
 
     // --- 4. TABLA INTERMEDIA DE RELACIONES (PlaylistSongCrossRef) ---

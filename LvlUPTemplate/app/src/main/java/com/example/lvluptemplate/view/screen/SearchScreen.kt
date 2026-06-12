@@ -26,7 +26,7 @@ import com.example.lvluptemplate.components.SongResultRow
 import com.example.lvluptemplate.viewmodel.MusicViewModel
 
 
-@Preview(showBackground = true)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(

@@ -20,9 +20,8 @@ import com.example.lvluptemplate.components.PlaylistCardComponent
 import com.example.lvluptemplate.components.SimpleBottomBar
 import com.example.lvluptemplate.viewmodel.MusicViewModel
 
-data class Playlist(val id: Int, val name: String, val tracksCount: Int)
+data class Playlist(val id: String, val name: String, val tracksCount: Int)
 
-@Preview(showBackground = true)
 @Composable
 fun PlaylistsScreen(
     viewModel: MusicViewModel,
@@ -32,20 +31,15 @@ fun PlaylistsScreen(
 ) {
     val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
 
-    val allPlaylist
+    val allPlaylist by viewModel.allPlaylists.collectAsState(initial = emptyList())
+
+    val songsForPlaylist by viewModel.getSongsForPlaylist(allPlaylist[0].id).collectAsState(emptyList())
+
+    val tracksCount = songsForPlaylist.size
 
     var showDialog by remember { mutableStateOf(false) }
 
-    var playlists by remember {
-        mutableStateOf(
-            listOf(
-                Playlist(1, "Daily Drive", 45),
-                Playlist(2, "Cyberpunk Beats", 28),
-                Playlist(3, "Chill Gaming", 60),
-                Playlist(4, "Elektro Sessions", 19)
-            )
-        )
-    }
+    var playlists by remember { mutableStateOf(listOf<Playlist>()) }
 
     Scaffold(
         bottomBar = {
@@ -92,27 +86,36 @@ fun PlaylistsScreen(
                 modifier = Modifier.fillMaxSize()
             ) {
 
-                item {
-                    AddPlaylistCard(onClick = {
-                        showDialog = true
-                    })
+                item{
+
+                    AddPlaylistCard(onClick = { showDialog = true })
 
                     if(showDialog){
                         CreatePlaylistDialog(
                             onDismiss = { showDialog = false },
                             onPlaylistCreated = { playlistName ->
-                                val newPlaylist = Playlist(playlists.size + 1, playlistName, 0)
-                                playlists = playlists + newPlaylist
+                                viewModel.createPlaylist(
+                                    name = playlistName,
+                                    description = "Custom Playlist"
+                                )
                                 showDialog = false
                             }
                         )
                     }
                 }
 
+                items(allPlaylist) { playlist ->
 
+                    val uiPlaylist = Playlist(
+                        id = playlist.id,
+                        name = playlist.name,
+                        tracksCount = tracksCount
+                    )
 
-                items(playlists) { playlist ->
-                    PlaylistCardComponent(playlist = playlist)
+                    PlaylistCardComponent(
+                        playlist = uiPlaylist,
+                        onClick = { onPlaylistClick(playlist.id) }
+                    )
                 }
 
             }

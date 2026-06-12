@@ -27,11 +27,16 @@ import androidx.compose.ui.unit.sp
 import com.example.lvluptemplate.view.screen.Playlist
 
 @Composable
-fun PlaylistCardComponent(playlist: Playlist) {
+fun PlaylistCardComponent(
+    playlist: Playlist,
+    onClick: () -> Unit
+) {
+
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {  }
+            .clickable { onClick() }
     ) {
 
         Box(
