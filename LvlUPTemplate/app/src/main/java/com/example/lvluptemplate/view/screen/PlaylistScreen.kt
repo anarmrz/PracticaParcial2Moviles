@@ -26,11 +26,8 @@ data class Playlist(val id: String, val name: String, val tracksCount: Int)
 fun PlaylistsScreen(
     viewModel: MusicViewModel,
     onPlaylistClick: (String) -> Unit,
-    onNavigateBack: () -> Unit,
     onNavigateMenu: (String) -> Unit
 ) {
-    val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
-
     val allPlaylist by viewModel.allPlaylists.collectAsState(initial = emptyList())
 
     val songsForPlaylist by viewModel.getSongsForPlaylist(allPlaylist[0].id).collectAsState(emptyList())
@@ -39,19 +36,20 @@ fun PlaylistsScreen(
 
     var showDialog by remember { mutableStateOf(false) }
 
+    //Observamos el estado reactivo del reproductor global para el BottomBar
+    val globalPlayingSong by viewModel.currentPlayingSong.collectAsState()
+
 
     Scaffold(
         bottomBar = {
             Column {
-                // Validación de seguridad obligatoria
-                if (allSongs.isNotEmpty()) {
-                    val currentSong = allSongs[0] // Tomas la canción
-
+                //Usamos el reproductor global dinámico en lugar de allSongs[0]
+                if (globalPlayingSong != null) {
                     MiniPlayerComponent(
                         viewModel = viewModel,
-                        songId = currentSong.id,       // Pasas solo el ID
-                        title = currentSong.title,     // Pasas solo el título
-                        artist = currentSong.artist    // Pasas solo el artista
+                        songId = globalPlayingSong!!.id,
+                        title = globalPlayingSong!!.title,
+                        artist = globalPlayingSong!!.artist
                     )
                 }
                 SimpleBottomBar(onNavigateMenu = onNavigateMenu)

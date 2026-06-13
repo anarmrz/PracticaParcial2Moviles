@@ -48,6 +48,9 @@ fun SongDetailScreen(
 
     val currentSong = allSongs.find { it.id == songId }
 
+    //Observamos el estado reactivo del reproductor global para el BottomBar
+    val globalPlayingSong by viewModel.currentPlayingSong.collectAsState()
+
     val topBackgroundColor = Color(0xFF1A1A1A)
     val bottomBackgroundColor = Color(0xFF0D0E11)
     val darkCardColor = Color(0xFF161920)
@@ -68,15 +71,13 @@ fun SongDetailScreen(
         },
         bottomBar = {
                 Column() {
-                    // Validación de seguridad obligatoria
-                    if (allSongs.isNotEmpty()) {
-                        val currentSong = allSongs[0] // Tomas la canción
-
+                    //Usamos el reproductor global dinámico en lugar de allSongs[0]
+                    if (globalPlayingSong != null) {
                         MiniPlayerComponent(
                             viewModel = viewModel,
-                            songId = currentSong.id,       // Pasas solo el ID
-                            title = currentSong.title,     // Pasas solo el título
-                            artist = currentSong.artist    // Pasas solo el artista
+                            songId = globalPlayingSong!!.id,
+                            title = globalPlayingSong!!.title,
+                            artist = globalPlayingSong!!.artist
                         )
                     }
                     SimpleBottomBar(onNavigateMenu = onNavigateMenu)

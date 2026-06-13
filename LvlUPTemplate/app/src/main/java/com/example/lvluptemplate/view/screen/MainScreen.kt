@@ -45,6 +45,9 @@ fun MainScreen(
     //Al poner empty list le estás diciendo: "Mientras la base de datos se digna a traerme
     // las canciones reales, dibuja una lista vacía para que la aplicación no colapse".
 
+    //Observamos el estado reactivo del reproductor global para el BottomBar
+    val globalPlayingSong by viewModel.currentPlayingSong.collectAsState()
+
     val favoriteArtistsSongs = allSongs.take(3)
     val newMusicSongs = allSongs.drop(3).take(3)
     val recommendedSongs = allSongs.drop(6)
@@ -54,15 +57,13 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             Column() {
-                // Validación de seguridad obligatoria
-                if (allSongs.isNotEmpty()) {
-                    val currentSong = allSongs[0] // Tomas la canción
-
+                //Usamos el reproductor global dinámico en lugar de allSongs[0]
+                if (globalPlayingSong != null) {
                     MiniPlayerComponent(
                         viewModel = viewModel,
-                        songId = currentSong.id,       // Pasas solo el ID
-                        title = currentSong.title,     // Pasas solo el título
-                        artist = currentSong.artist    // Pasas solo el artista
+                        songId = globalPlayingSong!!.id,
+                        title = globalPlayingSong!!.title,
+                        artist = globalPlayingSong!!.artist
                     )
                 }
                 SimpleBottomBar(onNavigateMenu = onNavigateMenu)

@@ -32,30 +32,28 @@ import com.example.lvluptemplate.viewmodel.MusicViewModel
 fun SearchScreen(
     viewModel: MusicViewModel,
     onSongClick: (String) -> Unit,
-    onNavigateBack: () -> Unit,
     onNavigateMenu: (String) -> Unit
 ) {
-
-    val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
 
     var searchQuery by remember { mutableStateOf("") }
 
     val searchResults by viewModel.searchSongs(searchQuery).collectAsState(initial = emptyList())
+
+    //Observamos el estado reactivo del reproductor global para el BottomBar
+    val globalPlayingSong by viewModel.currentPlayingSong.collectAsState()
 
 
 
     Scaffold(
         bottomBar = {
             Column() {
-                // Validación de seguridad obligatoria
-                if (allSongs.isNotEmpty()) {
-                    val currentSong = allSongs[0] // Tomas la canción
-
+                //Usamos el reproductor global dinámico en lugar de allSongs[0]
+                if (globalPlayingSong != null) {
                     MiniPlayerComponent(
                         viewModel = viewModel,
-                        songId = currentSong.id,       // Pasas solo el ID
-                        title = currentSong.title,     // Pasas solo el título
-                        artist = currentSong.artist    // Pasas solo el artista
+                        songId = globalPlayingSong!!.id,
+                        title = globalPlayingSong!!.title,
+                        artist = globalPlayingSong!!.artist
                     )
                 }
                 SimpleBottomBar(onNavigateMenu = onNavigateMenu)
