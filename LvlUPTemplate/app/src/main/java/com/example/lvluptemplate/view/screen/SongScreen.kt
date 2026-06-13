@@ -38,7 +38,6 @@ import com.example.lvluptemplate.viewmodel.MusicViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showBackground = true)
 fun SongDetailScreen(
     viewModel: MusicViewModel,
     songId: String,
@@ -46,6 +45,8 @@ fun SongDetailScreen(
     onNavigateMenu: (String) -> Unit
 ) {
     val allSongs by viewModel.allSongs.collectAsState(initial = emptyList())
+
+    val currentSong = allSongs.find { it.id == songId }
 
     val topBackgroundColor = Color(0xFF1A1A1A)
     val bottomBackgroundColor = Color(0xFF0D0E11)
@@ -58,7 +59,7 @@ fun SongDetailScreen(
             TopAppBar(
                 title = { },
                 navigationIcon = {
-                    IconButton(onClick = { /* Volver atrás */ }) {
+                    IconButton(onClick = { onNavigateBack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
                     }
                 },
@@ -105,7 +106,7 @@ fun SongDetailScreen(
                         Box(modifier = Modifier.fillMaxSize().background(Color(0xFF5E5A44))){
                             AsyncImage(
                                 //Cambiar model por las imagenes de las canciones
-                                model = "https://cdn-images.dzcdn.net/images/cover/5718f7c81c27e0b2417e2a4c45224f8a/0x1900-000000-80-0-0.jpg",
+                                model = currentSong?.coverUrl,
                                 contentDescription = "Cover de portada",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.matchParentSize()
@@ -117,7 +118,7 @@ fun SongDetailScreen(
 
                     //TITULO DE LA CANCION
                     Text(
-                        text = "Song name",
+                        text = currentSong?.title ?: "Titulo de cancion",
                         color = Color.White,
                         fontSize = 26.sp,
                         fontWeight = FontWeight.Bold,
@@ -127,7 +128,7 @@ fun SongDetailScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                     //ARTISTA
                     Text(
-                        text = "By Artist",
+                        text = currentSong?.artist ?: "Artista de cancion",
                         color = Color.Gray,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
@@ -156,7 +157,15 @@ fun SongDetailScreen(
                                 .size(48.dp)
                                 .clip(CircleShape)
                                 .background(darkCardColor)
-                                .clickable {/* Añadir cancion a PLAYLIST*/ },
+                                .clickable {
+                                    // Para este parcial, vamos a meterla a la primera playlist por defecto
+                                    // para no tener que programar un diálogo entero de selección.
+                                    val playlists = viewModel.allPlaylists.value
+                                    if (playlists.isNotEmpty() && currentSong != null) {
+                                        viewModel.addSongToPlaylist(playlists[0].id, currentSong.id)
+                                        Toast.makeText(context, "Agregada a playlist", Toast.LENGTH_SHORT).show()
+                                    }
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(Icons.Default.Add, contentDescription = "Add", tint = Color.Gray, modifier = Modifier.size(20.dp))
@@ -166,7 +175,13 @@ fun SongDetailScreen(
 
 
                         Button(
-                            onClick = { Toast.makeText(context,"Reproduciendo",Toast.LENGTH_SHORT).show() },
+                            onClick = {
+                                if (currentSong != null) {
+                                    // Esto cambia la barra inferior y suma +1 al contador de la BD
+                                    viewModel.setCurrentSong(currentSong)
+                                    Toast.makeText(context, "Reproduciendo", Toast.LENGTH_SHORT).show()
+                                }
+                            },
                             colors = ButtonDefaults.buttonColors(Color(0xFF7E49C3)),
                             shape = RoundedCornerShape(50.dp),
                             contentPadding = PaddingValues(horizontal = 32.dp, vertical = 12.dp),
@@ -187,7 +202,12 @@ fun SongDetailScreen(
                                 .size(48.dp)
                                 .clip(CircleShape)
                                 .background(darkCardColor)
-                                .clickable { },
+                                .clickable {
+                                    if (currentSong!=null){
+                                        viewModel.addSongToPlaylist("p4", currentSong.id)
+                                        Toast.makeText(context, "Añadida a Favoritos ❤️", Toast.LENGTH_SHORT).show()
+                                    }
+                                },
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(Icons.Default.FavoriteBorder, contentDescription = "Favorite", tint = Color.Gray, modifier = Modifier.size(20.dp))
@@ -203,7 +223,11 @@ fun SongDetailScreen(
                 ) {
 
                     Spacer(modifier = Modifier.height(24.dp))
-                    TrackRowItem(title = "Song title")
+                    TrackRowItem(
+                        title = currentSong?.title ?: "titulo" ,
+                        cover = currentSong?.coverUrl ?: "cover",
+                        onClick = {  }
+                    )
                 }
 
         }
